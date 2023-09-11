@@ -15,5 +15,5 @@ racecarSocket.bind((HOST, PORT)) # Bind the socket to the  host and port
 while True:
 	(vehiculePos, vehiculeId) = racecarSocket.recvfrom(16) # Receives vehicule position and vehicule ID from the socket (Datagram)
 	vehiculePosUnpack = unpack(positionFormat,vehiculePos) # Convert binary to string
-	print("Vehicule ID : ",vehiculeId) # Print vehicule ID
-	print("Vehicule position : ",vehiculePosUnpack) # Print vehicule position
+	print("ID du vehicule : ",vehiculeId) # Print vehicule ID
+	print("Position du vehicule : ",vehiculePosUnpack) # Print vehicule position

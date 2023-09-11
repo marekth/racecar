@@ -46,7 +46,7 @@ class ROSMonitor:
 
         self.racecarSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # Socket uses IPv4 and is a Datagram socket (Message destination unknown; broadcast to all potential listeners)
         self.racecarSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) # Enable broadcasting on the socket for sending data to multiple devices on the same network segment
-        self.racecarSocket.bind(('10.0.1.21',self.pos_broadcast_port)) # NEED TO FIND ADDRESS TO BIND!
+        self.racecarSocket.bind(('10.0.1.19',self.pos_broadcast_port)) # Bind to address
         
         self.broadcastFrequency = rospy.Timer(rospy.Duration(1), self.broadcastFrequency_cb) # Broadcast vehicle position at 1 Hz frequency
  
@@ -70,7 +70,7 @@ class ROSMonitor:
 
         self.rr_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Socket uses IPv4 and is a TCP socket (Connexion has to be established; message integrity assured with ACK)
         self.rr_socket.settimeout(None) # Block indefinitely while waiting for data
-        self.rr_socket.bind(('10.0.1.21',self.remote_request_port)) # NEED TO FIND ADDRESS TO BIND!
+        self.rr_socket.bind(('10.0.1.21',self.remote_request_port)) # Bind to address
 
         while True:
             self.rr_socket.listen(1) # Prepare socket to accept one incoming connection at a time
