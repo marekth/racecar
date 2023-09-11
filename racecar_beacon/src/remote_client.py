@@ -18,7 +18,7 @@ while True:
 	dataFromSocket = racecarSocket.recv(16) # Receive data from the socket (TCP)
 	if not dataFromSocket:
 		break # Break from loop if connexion is closed by client
-	userInput = input("Enter command :") # Prompts user to enter command (RPOS, OBSF or RBID)
+	userInput = input("Entrer une commande :") # Prompts user to enter command (RPOS, OBSF or RBID)
 	if userInput == "RPOS":
 		racecarSocket.send(userInput) # Send vehicule position
 		vehiculePos = dataFromSocket# Vehicule position from the socket (TCP)

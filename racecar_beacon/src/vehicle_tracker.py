@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import socket 
-import time
 from struct import * # Import struct to use unpack
 
 HOST = '127.0.0.1'
@@ -15,6 +14,6 @@ racecarSocket.bind((HOST, PORT)) # Bind the socket to the  host and port
 
 while True:
 	(vehiculePos, vehiculeId) = racecarSocket.recvfrom(16) # Receives vehicule position and vehicule ID from the socket (Datagram)
-	vehiculePosUnpack=unpack(positionFormat,vehiculePos) # Convert binary to string
+	vehiculePosUnpack = unpack(positionFormat,vehiculePos) # Convert binary to string
 	print("Vehicule ID : ",vehiculeId) # Print vehicule ID
 	print("Vehicule position : ",vehiculePosUnpack) # Print vehicule position
