@@ -62,7 +62,7 @@ class ROSMonitor:
                 self.obstacle = True # Obstacle detected
     def broadcastFrequency_cb(self, event):
         vehiculePosPack = pack(vehiculeFormat,self.pos[0],self.pos[1],self.pos[2],self.id) # Convert string to binary
-        self.racecarSocket.sendto(vehiculePosPack,("10.0.1.255",self.pos_broadcast_port)) # Send vehicule position NEED TO FIND ADDRESS!
+        self.racecarSocket.sendto(vehiculePosPack,("10.0.1.21",self.pos_broadcast_port)) # Send vehicule position NEED TO FIND ADDRESS!
 
     def rr_loop(self):
         # Init your socket here :
