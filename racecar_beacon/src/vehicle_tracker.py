@@ -3,7 +3,7 @@
 import socket 
 from struct import * # Import struct to use unpack
 
-HOST = '10.0.1.255'
+HOST = '10.0.1.21'
 # This process should listen to a different port than the RemoteRequest client.
 PORT = 65431
 

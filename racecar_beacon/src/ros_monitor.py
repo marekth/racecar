@@ -48,7 +48,7 @@ class ROSMonitor:
         self.racecarSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # Socket uses IPv4 and is a Datagram socket (Message destination unknown; broadcast to all potential listeners)
         
         self.racecarSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1) # Enable broadcasting on the socket for sending data to multiple devices on the same network segment
-        self.racecarSocket.bind(('10.0.1.255',self.pos_broadcast_port)) # Bind to address
+        self.racecarSocket.bind(('10.0.1.21',self.pos_broadcast_port)) # Bind to address
         
         self.broadcastFrequency = rospy.Timer(rospy.Duration(1), self.broadcastFrequency_cb) # Broadcast vehicle position at 1 Hz frequency
  
@@ -72,8 +72,7 @@ class ROSMonitor:
     def broadcastFrequency_cb(self, event):
         if not rospy.is_shutdown():
             vehiculePosPack = pack(vehiculeFormat,self.pos[0],self.pos[1],self.pos[2],self.id) # Convert string to binary
-            self.racecarSocket.sendto(vehiculePosPack,("10.0.1.255",self.pos_broadcast_port)) # Send vehicule position NEED TO FIND ADDRESS!
-            print(vehiculePosPack)
+            self.racecarSocket.sendto(vehiculePosPack,("10.0.1.255",self.pos_broadcast_port)) # Send vehicule position 
         else :
             self.racecarSocket.close()
             print("Broadcast socket closed.")
