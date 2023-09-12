@@ -3,9 +3,9 @@
 import socket 
 from struct import * # Import struct to use unpack
 
-HOST = '127.0.0.1'
+HOST = '10.0.1.255'
 # This process should listen to a different port than the RemoteRequest client.
-PORT = 65433
+PORT = 65431
 
 vehiculeFormat = "fffI" # Format is three 32-bit floats for position of vehicule and one 32-bit integer for vehicule ID
 
