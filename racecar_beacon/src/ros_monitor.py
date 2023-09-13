@@ -10,11 +10,16 @@ from sensor_msgs.msg import LaserScan
 from struct import * # Import struct to use unpack
 from tf.transformations import euler_from_quaternion # Import to transform quaternion to yaw
 
+def is_big_endian():
+    packed = pack('>I', 1)
+    return unpack('I', packed)[0] == 1
 
-vehiculeFormat = "fffI" # Format is three 32-bit floats for position of vehicule and one 32-bit integer for vehicule ID
-positionFormat = "fffxxxx" # Format is three 32-bit floats and four empty bytes for position of vehicule
-obstacleFormat = "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
-idFormat = "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
+endianness_char = '>' if is_big_endian() else '<' # Set the endianness format character: '>' for big-endian, '<' for little-endian.
+
+vehiculeFormat = endianness_char + "fffI" # Format is three 32-bit floats for position of vehicule and one 32-bit integer for vehicule ID
+positionFormat = endianness_char + "fffxxxx" # Format is three 32-bit floats and four empty bytes for position of vehicule
+obstacleFormat = endianness_char + "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
+idFormat = endianness_char + "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
 userInputFormat = "4s"
 
 def quaternion_to_yaw(quat):

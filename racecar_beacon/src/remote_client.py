@@ -4,13 +4,19 @@ import socket
 from struct import * # Import struct to use unpack
 import sys
 
+def is_big_endian():
+    packed = pack('>I', 1)
+    return unpack('I', packed)[0] == 1
+
+endianness_char = '>' if is_big_endian() else '<' # Set the endianness format character: '>' for big-endian, '<' for little-endian.
+
 HOST = '10.0.1.21'
 # This process should listen to a different port than the PositionBroadcast client.
 PORT = 65432
 
-positionFormat = "fffxxxx" # Format is three 32-bit floats and four empty bytes for position of vehicule
-obstacleFormat = "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
-idFormat = "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
+positionFormat = endianness_char + "fffxxxx" # Format is three 32-bit floats and four empty bytes for position of vehicule
+obstacleFormat = endianness_char + "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
+idFormat = endianness_char + "Ixxxxxxxxxxxx" # Format is one 32-bit integer and twelve empty bytes
 userInputFormat = "4s"
 
 racecarSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Socket uses IPv4 and is a TCP socket (Connexion has to be established; message integrity assured with ACK)

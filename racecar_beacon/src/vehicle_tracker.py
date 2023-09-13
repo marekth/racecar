@@ -3,11 +3,17 @@
 import socket 
 from struct import * # Import struct to use unpack
 
+def is_big_endian():
+    packed = pack('>I', 1)
+    return unpack('I', packed)[0] == 1
+
+endianness_char = '>' if is_big_endian() else '<' # Set the endianness format character: '>' for big-endian, '<' for little-endian
+
 HOST = '10.0.1.21'
 # This process should listen to a different port than the RemoteRequest client.
 PORT = 65431
 
-vehiculeFormat = "fffI" # Format is three 32-bit floats for position of vehicule and one 32-bit integer for vehicule ID
+vehiculeFormat = endianness_char + "fffI" # Format is three 32-bit floats for position of vehicule and one 32-bit integer for vehicule ID
 
 racecarSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) # Socket uses IPv4 and is a Datagram socket (Message destination unknown; broadcast to all potential listeners)
 racecarSocket.bind((HOST, PORT)) # Bind the socket to the  host and port
