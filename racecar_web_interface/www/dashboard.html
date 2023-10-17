@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <title>Racecar Dashboard</title>
+
+</head>
+
+<body>
+
+ 
+  
+  <!-- Menu END-->
+
+  <!-- Main layout BEGIN-->
+  <div class="login">
+    
+    
+    
+    <div class="container-fluid">
+        <div class="title">
+            <div class="overlap-group overlap">
+                <h1 class="title-1 valign-text-middle">Racecar</h1>
+            </div>
+        </div>
+        
+        <div class="row mb-4 justify-content-center">
+            <div class="col-md-3">
+                <div class="d-pad">
+      		
+                    <!-- Directional buttons -->
+                    <div class="button up" id="upButton">↑</div>
+
+                    <div class="button down" id="downButton">↓</div>
+                    <div class="button right" id="rightButton">→</div>
+
+                    <div class="button left" id="leftButton">←</div>
+
+                    
+                </div>
+
+                <div class="effacez-button">
+                    <button class="btn btn-primary mb-2" onclick="disconnectCB();">Disconnect</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                
+                
+                
+                <div class="center-container">
+                    <img src="http://10.42.0.1:8080/stream?topic=/racecar/raspicam_node/image&type=ros_compressed" alt="Camera" id="centered-image">
+                </div>
+                
+                
+                
+    
+            </div> 
+            <div class="col-md-3">
+              <div class="col-status">
+                <h3 style="color:rgb(0, 0, 0); font-size: 48px; font-weight: bold;">Status</h3>
+                <textarea id="status_text" name="status_text" style="color:rgb(0, 0, 0); font-size: 36px;" readonly rows="3" cols="48"></textarea>
+              </div>
+            
+            </div>
+                    
+        </div>            
+                    
+    </div>        
+            
+  </div>
+  <!-- Main layout END-->
+  
+  <!-- JavaScript, import frameworks -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="js/jquery-3.3.1.slim.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/roslib.min.js"></script> <!-- rosbridge -->
+  <script src="JoyStick-master/joy.js"></script>
+
+  <!-- Custom scripts -->
+  
+  <script>
+	  
+
+		  
+		let speed = 0;
+		let steer = 0;
+
+		
+		function handlePress(event) {
+		    event.target.style.opacity = "0.5";
+
+		    // Check the ID of the button to determine behavior
+		    
+		    switch(event.target.id) {
+		    
+          case 'upButton':
+              speed = 2.5;
+              
+              break;
+              
+          case 'downButton':
+              speed = -2.5;
+            
+              break;
+              
+          case 'leftButton':
+
+              steer = -0.5;
+              break;
+              
+          case 'rightButton':
+              steer = 0.5;  
+              break;
+		    }
+
+		}
+
+		function disconnectCB() {
+            isRosOk = false;
+            location.href = "index.html";
+    }
+		function handleRelease(event) {
+		
+		    event.target.style.opacity = "1";
+
+		    if (event.target.id === 'leftButton' || event.target.id === 'rightButton') {
+			steer = 0;  // Reset steering when releasing the button
+		    } else {
+			speed = 0;  // Reset speed for up and down buttons
+		    }
+
+		}
+
+		const buttons = ['upButton', 'rightButton', 'downButton', 'leftButton'];
+
+
+		buttons.forEach(buttonId => {
+		    const button = document.getElementById(buttonId);
+
+		    button.addEventListener('mousedown', handlePress);
+		    button.addEventListener('mouseup', handleRelease);
+		    button.addEventListener('mouseleave', handleRelease); 
+		    button.addEventListener('touchstart', function(e) {
+			e.preventDefault();
+			handlePress(e);
+		    });
+		    button.addEventListener('touchend', handleRelease);
+		});
+				    
+		    
+
+  
+  </script>
+  <script>
+  
+  	function updateStatus(event, action) {
+
+  	  console.log("Function called with action:", action);  
+  	  event.preventDefault();
+  	    
+  	    
+  	  if (action == 'Disconnect'){
+		    document.getElementById("statusBox").value = "";
+		    currentStatus = "";
+		  }
+  	
+    	// Get the current content of the status box
+	    let currentStatus = document.getElementById("statusBox").value;
+    
+	    // Update the content with the new action
+	    currentStatus += action + '\n';
+
+	    // Set the updated content back to the status box
+	    document.getElementById("statusBox").value = currentStatus;
+    }
+  </script>
+  
+  
+  <script>
+
+      var rbServer = null;
+      var cmdVelTopic = null;
+      var isRosOk = false;
+
+      function getIP () {
+        return sessionStorage.getItem("IP");
+      }
+
+      function getUser () {
+        return sessionStorage.getItem("USER");
+      }
+
+
+      function updateStatus(isConnected)
+      {
+        document.getElementById('status_text').value = "";
+        document.getElementById('status_text').value += "Username: " + getUser() + '\n';
+        document.getElementById('status_text').value += "IP address: " + getIP() + '\n';
+
+        if(isConnected)
+        {
+          document.getElementById('status_text').value += "Connected: True";
+        }
+        else
+        {
+          document.getElementById('status_text').value += "Connected: False";
+        }
+      }
+
+      function connectROS() {
+      // This function connects to the rosbridge server
+
+        rbServer = new ROSLIB.Ros({
+          url : 'ws://' + getIP() + ':9090'
+        });
+
+        rbServer.on('connection', function(){
+          console.log('Connected to websocket server.');
+          isRosOk = true;
+
+          // These lines create a topic object as defined by roslibjs
+          cmdVelTopic = new ROSLIB.Topic({
+            ros : rbServer,
+            name : '/racecar/cmd_vel_abtr_2',
+            messageType : 'geometry_msgs/Twist'
+          });
+
+          updateStatus(true);
+        });
+
+        rbServer.on('error', function(error) {
+          console.log('Error connecting to websocket server: ', error);
+          isRosOk = false;
+
+          updateStatus(false);
+        });
+
+        rbServer.on('close', function() {
+          console.log('Connection to websocket server closed.');
+          isRosOk = false;
+
+          updateStatus(false);
+        });
+      }
+
+
+      updateStatus(false);
+
+      connectROS();
+
+      var twist = new ROSLIB.Message({
+           linear : {
+                x : 0.0,
+                y : 0.0,
+                z : 0.0
+            },
+            angular : {
+                x : 0.0,
+                y : 0.0,
+                z : 0.0
+            }
+      });
+
+      //Publishing loop cmd_vel at 5 Hz
+      setInterval(function(){
+        if(cmdVelTopic != null)
+        {
+          if(isRosOk)
+          {
+            twist.linear.x = speed;
+            twist.angular.z = -steer;
+            cmdVelTopic.publish(twist);
+          }
+          else
+          {
+            twist.linear.x = 0;
+            twist.angular.z = 0;
+            cmdVelTopic.publish(twist);
+          }
+        }
+      }, 200);
+
+  </script>
+</body>
+</html>
