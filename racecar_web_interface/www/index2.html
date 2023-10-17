@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <title>Laboratoire S5-GIF250</title>
+</head>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+
+  <title>Racecar - Log in</title>
+
+  <script>
+    function connectBtnCB()
+    {
+      let username = document.getElementById('username').value;
+      let IP_value = document.getElementById('IP_value').value;
+
+      if (IP_value === "")
+      {
+        alert("IP must be filled out");
+        return false;
+      }
+
+      else if (username === "")
+      {
+        alert("Username must be filled out");
+        return false;
+      }
+
+      else if (username != "user")
+      {
+        alert("Username is not recognized");
+        return false;
+      }
+
+      else
+      {
+        sessionStorage.setItem("IP", IP_value);
+        sessionStorage.setItem("USER", username);
+        location.href = "dashboard.html";
+      }
+    }
+  </script>
+</head>
+<body style="margin-left: 30px;">
+
+  <h2>Configuration</h2><br>
+
+  Username:<br>
+  <input id="username" type="text" name="username"><br><br>
+  ROS master IP:<br>
+  <input id="IP_value" type="text" name="IP_value"><br><br>
+  <input type="button" value="Connect" onclick="connectBtnCB();">
+
+</body>
+</html>
