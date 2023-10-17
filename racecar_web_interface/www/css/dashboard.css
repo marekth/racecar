@@ -1,90 +1,260 @@
+
+
 body {
-  font-size: .875rem;
+  font-size: 1rem; /* You can adjust this for default size and everything else will adjust */
+  margin: 0;
+  padding: 0;
 }
 
-/*
- * Sidebar
- */
+.login {
+  align-items: center;
+  background-color: #018B49;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100vw; /* Set width to 100% of viewport width */
+  max-width: 3000px; /* Avoid it from becoming too big */
 
-.sidebar {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100; /* Behind the navbar */
-  padding: 48px 0 0; /* Height of navbar */
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
 }
 
-.sidebar-sticky {
-  position: relative;
-  top: 0;
-  height: calc(100vh - 48px);
-  padding-top: .5rem;
-  overflow-x: hidden;
-  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+.hidden,
+.hidden * {
+  pointer-events: none;
+  visibility: hidden;
 }
 
-@supports ((position: -webkit-sticky) or (position: sticky)) {
-  .sidebar-sticky {
-    position: -webkit-sticky;
-    position: sticky;
-  }
+.connect {
+  align-items: flex-start;
+  display: flex;
+  margin-left: 1px;
+  margin-top: 150px;
+  margin-bottom: 98px;
+  min-width: 213px;
 }
 
-.sidebar .nav-link {
-  font-weight: 500;
-  color: #333;
+.login .overlap {
+  align-items: flex-start;
+  display: flex;
+  width: 100%;
+  justify-content: center;
 }
 
-.sidebar .nav-link.active {
-  color: #007bff;
+.overlap-group1 {
+  background-color: var(--black);
+  border-color: var(--yellow);
+  border-radius: 15px;
+  width: 100%;
+  justify-content: center;
 }
 
-.sidebar-heading {
-  font-size: .75rem;
-  text-transform: uppercase;
+.valign-text-middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/*
- * Content
- */
-
-[role="main"] {
-  padding-top: 133px; /* Space for fixed navbar */
+.connect-1 {
+  color: var(--yellow);
+  background-color: var(--black);
+  font-family: var(--font-family-arial);
+  border-radius: 15px;
+  border-color: var(--yellow);
+  font-size: var(--font-size-l);
+  font-weight: 400;
+  height: 75px;
+  letter-spacing: 0;
+  line-height: 38px;
+  text-align: center;
+  width: 211px;
 }
 
-@media (min-width: 768px) {
-  [role="main"] {
-    padding-top: 48px; /* Space for fixed navbar */
-  }
+
+
+.ip-address {
+  height: 39px;
+  letter-spacing: 0;
+  line-height: 30px;
+  text-align: center;
+  width: 239px;
 }
 
-/*
- * Navbar
- */
-
-.navbar-brand {
-  padding-top: .75rem;
-  padding-bottom: .75rem;
-  font-size: 1rem;
-  background-color: rgba(0, 0, 0, .25);
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+.username {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 100px;
+  
 }
 
-.navbar .form-control {
-  padding: .75rem 1rem;
-  border-width: 0;
-  border-radius: 0;
+.username2 {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+
 }
 
-.form-control-dark {
-  color: #fff;
-  background-color: rgba(255, 255, 255, .1);
-  border-color: rgba(255, 255, 255, .1);
+.center-container {
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.form-control-dark:focus {
-  border-color: transparent;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
+#centered-image {
+  display: block; /* Removes the bottom margin due to inline nature of the image. */
+  max-width: 100%; /* Ensures the image doesn't overflow the container if it's too big. */
 }
+
+
+.username-1 {
+  height: 39px;
+  letter-spacing: 0;
+  line-height: 30px;
+  text-align: center;
+  width: 239px;
+}
+
+.title {
+  align-items: flex-start;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.overlap-group {
+  background-color: var(--yellow);
+  height: 195px;
+  justify-content: flex-end;
+  min-width: 192px;
+  padding: 40.9px 124.6px;
+}
+
+.input-box {
+  width: 100%;
+  padding: 0.5em;
+  margin: 0.5em 0;
+  box-sizing: border-box;
+}
+
+.title-1 {
+  color: var(--black);
+  font-family: var(--font-family-arial);
+  font-size: var(--font-size-m2);
+  font-weight: 400;
+  height: 112px;
+  letter-spacing: 0;
+  line-height: 132px;
+  text-align: center;
+  white-space: nowrap;
+  width: 1677px;
+}
+
+/* Variables */
+:root {
+  --black: rgba(0, 0, 0, 1);
+  --salem: rgba(1, 136, 73, 1);
+  --spun-pearl: rgba(170, 174, 183, 1);
+  --white: rgba(255, 255, 255, 1);
+
+  --font-size-m: 26px;
+  --font-size-l: 38px;
+  --font-size-m2: 132px;
+
+  --font-family-arial: 'Arial';
+}
+
+/* Classes */
+.arial-normal-black-26px {
+  color: var(--black);
+  font-family: var(--font-family-arial);
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.arial-normal-black-132px {
+  color: var(--black);
+  font-family: var(--font-family-arial);
+  font-size: 7rem;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.flex-container
+{
+  display: flex;
+  justify-content: space-around;;
+  align-items: center;
+  align-content: center;
+  flex-wrap: nowrap;
+  height: 100%;
+}
+
+.col-status
+{
+  align-self: flex-end;
+  text-align: center;
+}
+
+#status_text
+{
+  color: rgb(0, 0, 0);
+  background: transparent;
+  border: none;
+  outline: none;
+  text-align: justify;
+  text-align-last: center;
+}
+
+.d-pad {
+position: relative;
+width: 300px;
+height: 300px;
+margin: 50px auto;
+}
+
+.button {
+position: absolute;
+width: 100px;
+height: 100px;
+background-color: #333;
+border: 2px solid #fff;
+
+/* Centering and styling the arrow symbols */
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 36px;   /* Adjust to your preference */
+font-weight: bold;
+color: #fff;
+}
+.col-status {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+height: 100%;  /* This ensures that the div takes up the full height of its parent .col-md-3 */
+}
+.effacez-button {
+display: flex;          /* Turn on flexbox for the container */
+align-items: center;    /* Vertically center the content */
+justify-content: center;/* Horizontally center the content */
+}
+
+.effacez-button .btn {
+font-size: 36px;        /* Adjust to desired size */
+padding: 15px 30px;     /* Adjust to desired padding */
+width: 60%;             /* Adjust to desired width percentage */
+margin: 0;              /* Ensure no margins */
+background-color: red;     /* Red background */
+border-color: darkred;     /* Slightly darker red for the border for some depth, adjust as needed */
+color: #fff;
+font-weight: bold;
+border-radius: 15px;  
+}
+
+
+.button.up { top: 0; left: 50%; transform: translateX(-50%); }
+.button.right { top: 50%; right: 0; transform: translateY(-50%); }
+.button.down { bottom: 0; left: 50%; transform: translateX(-50%); }
+.button.left { top: 50%; left: 0; transform: translateY(-50%); }
