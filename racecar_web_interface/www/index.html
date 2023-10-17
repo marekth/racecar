@@ -1,17 +1,5 @@
 <!doctype html>
 <html>
-<!-- 
-==References==
-Server-side:
-* http://docs.ros.org/indigo/api/roswww/html/
-* http://wiki.ros.org/web_video_server
-* http://wiki.ros.org/rosbridge_suite/Tutorials/RunningRosbridge
-
-Client-side:
-* http://wiki.ros.org/roslibjs/Tutorials/BasicRosFunctionality
-* https://getbootstrap.com/docs/4.0/getting-started/introduction/
-* https://getbootstrap.com/docs/4.0/layout/grid/
--->
 
 <head>
     <!-- Required meta tags -->
@@ -25,100 +13,52 @@ Client-side:
     <title>Laboratoire S5-GIF250</title>
 </head>
 
+    <title>Racecar Connection</title>
+
+</head>
+
 <body>
-    
-  <!-- Menu BEGIN-->
-  <div class="collapse" id="navbarToggleExternalContent">
-    <div class="bg-dark p-4">
-      <h6 class="text-white h4">Config</h6>
+    <div class="login">
+        <div class="title">
+            <div class="overlap-group overlap">
+                <h1 class="title-1 valign-text-middle">Racecar</h1>
+            </div>
+        </div>
+        <div class="username">
+            <div class="username-1 valign-text-middle arial-normal-black-26px">Username</div>
+            <input id="username" type="text" name="username" class="input-box">
+        </div>
+        <div class="ip-address">
+            <div class="ip-label valign-text-middle arial-normal-black-26px">IP Address</div>
+            <input id="IP_value" type="text" name="IP_value" class="input-box">
+        </div>
+        <div class="connect">
+            <div class="overlap-group1 overlap">
+                <input type="button" value="Connect" onclick="connectCb();" class="connect-1 valign-text-middle">
+            </div>
+        </div>
     </div>
-  </div>
-
-  <nav class="navbar navbar-dark bg-dark">
-    <div>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-    </div>
-  </nav>
-  <!-- Menu END-->
-
-  <!-- Main layout BEGIN-->
-  <div class="container-fluid">
-
-  </div>
-  <!-- Main layout END-->
-  
-  <!-- JavaScript, import frameworks -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="js/jquery-3.3.1.slim.min.js"></script>
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/roslib.min.js"></script> <!-- rosbridge -->
-
-  <!-- Custom scripts -->
-  <script>
-      // Define some global variables
-      var rbServer = null;
-      var cmdVelTopic = null;
-
-      //Some initializations after the page has been shown
-      $(document).ready(function(){
-        document.getElementById("log").value = 'Default text\n'
-      });
-
-      // Define some functions
-      function connectROS() {
-        // This function connects to the rosbridge server
-
-	    rbServer = new ROSLIB.Ros({
-          // Assuming ros server IP is 10.42.0.1
-	      url : 'ws://10.42.0.1:9090'
-	    });
-
-        rbServer.on('connection', function(){
-            console.log('Connected to websocket server.');
-
-            // These lines create a topic object as defined by roslibjs
-            cmdVelTopic = new ROSLIB.Topic({
-                ros : rbServer,
-                name : '/racecar/cmd_vel_abtr_2',
-                messageType : 'geometry_msgs/Twist'
-            });
-	    });
-
-        rbServer.on('error', function(error) {
-          console.log('Error connecting to websocket server: ', error);
-	    });
-
-	    rbServer.on('close', function() {
-          console.log('Connection to websocket server closed.');
-	    });
-      }
-
-      // These lines create a message that conforms to the structure of the Twist defined in our ROS installation
-      // It initalizes all properties to zero. They will be set to appropriate values before we publish this message.
-      var twist = new ROSLIB.Message({
-           linear : {
-                x : 0.0,
-                y : 0.0,
-                z : 0.0
-            },
-            angular : {
-                x : 0.0,
-                y : 0.0,
-                z : 0.0
-            }
-      });
-
-      //Publishing loop cmd_vel at 5 Hz
-      setInterval(function(){
-           if(cmdVelTopic != null)
-           {
-             cmdVelTopic.publish(twist);
-           }
-      }, 200);
-
-  </script>
 </body>
+<script>
+    function connectCb() {
+        let username = document.getElementById('username').value;
+        let IP_value = document.getElementById('IP_value').value;
+
+        if (IP_value === "") {
+            alert("Enter IP address");
+            return false;
+        } else if (username === "") {
+            alert("Enter username");
+            return false;
+        } else if (username != "racecar") {
+            alert("Wrong username");
+            return false;
+        } else {
+            sessionStorage.setItem("IP", IP_value);
+            sessionStorage.setItem("USER", username);
+            location.href = "dashboard.html";
+        }
+    }
+</script>
+
 </html>
