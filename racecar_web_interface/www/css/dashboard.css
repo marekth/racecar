@@ -26,7 +26,6 @@ body {
 .connect {
   align-items: flex-start;
   display: flex;
-  margin-left: 1px;
   margin-top: 150px;
   margin-bottom: 98px;
   min-width: 213px;
@@ -172,6 +171,7 @@ body {
   font-size: 1.5rem;
   font-weight: 400;
   font-style: normal;
+  text-align: center;
 }
 
 .arial-normal-black-132px {
@@ -180,6 +180,7 @@ body {
   font-size: 7rem;
   font-weight: 400;
   font-style: normal;
+  text-align: center;
 }
 
 .flex-container
