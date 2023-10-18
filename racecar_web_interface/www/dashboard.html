@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="effacez-button">
-                    <button class="btn btn-primary mb-2" onclick="disconnectCB();">Disconnect</button>
+                    <button class="btn btn-primary mb-2" onclick="disconnectCb();">Disconnect</button>
                 </div>
             </div>
             <div class="col-md-6">
@@ -126,8 +126,8 @@
 
 		}
 
-		function disconnectCB() {
-            isRosOk = false;
+		function disconnectCb() {
+            rosStatus = false;
             location.href = "index.html";
     }
 		function handleRelease(event) {
@@ -175,13 +175,13 @@
 		    currentStatus = "";
 		  }
   	
-    	// Get the current content of the status box
+    	
 	    let currentStatus = document.getElementById("statusBox").value;
     
-	    // Update the content with the new action
+	  
 	    currentStatus += action + '\n';
 
-	    // Set the updated content back to the status box
+	
 	    document.getElementById("statusBox").value = currentStatus;
     }
   </script>
@@ -189,9 +189,9 @@
   
   <script>
 
-      var rbServer = null;
-      var cmdVelTopic = null;
-      var isRosOk = false;
+      var rosBridgeServer = null;
+      var topicVel = null;
+      var rosStatus = false;
 
       function getIP () {
         return sessionStorage.getItem("IP");
@@ -219,19 +219,19 @@
       }
 
       function connectROS() {
-      // This function connects to the rosbridge server
+     
 
-        rbServer = new ROSLIB.Ros({
+        rosBridgeServer = new ROSLIB.Ros({
           url : 'ws://' + getIP() + ':9090'
         });
 
-        rbServer.on('connection', function(){
+        rosBridgeServer.on('connection', function(){
           console.log('Connected to websocket server.');
-          isRosOk = true;
+          rosStatus = true;
 
           // These lines create a topic object as defined by roslibjs
-          cmdVelTopic = new ROSLIB.Topic({
-            ros : rbServer,
+          topicVel = new ROSLIB.Topic({
+            ros : rosBridgeServer,
             name : '/racecar/cmd_vel_abtr_2',
             messageType : 'geometry_msgs/Twist'
           });
@@ -239,16 +239,16 @@
           updateStatus(true);
         });
 
-        rbServer.on('error', function(error) {
+        rosBridgeServer.on('error', function(error) {
           console.log('Error connecting to websocket server: ', error);
-          isRosOk = false;
+          rosStatus = false;
 
           updateStatus(false);
         });
 
-        rbServer.on('close', function() {
+        rosBridgeServer.on('close', function() {
           console.log('Connection to websocket server closed.');
-          isRosOk = false;
+          rosStatus = false;
 
           updateStatus(false);
         });
@@ -274,19 +274,19 @@
 
       //Publishing loop cmd_vel at 5 Hz
       setInterval(function(){
-        if(cmdVelTopic != null)
+        if(topicVel != null)
         {
-          if(isRosOk)
+          if(rosStatus)
           {
             twist.linear.x = speed;
             twist.angular.z = -steer;
-            cmdVelTopic.publish(twist);
+            topicVel.publish(twist);
           }
           else
           {
             twist.linear.x = 0;
             twist.angular.z = 0;
-            cmdVelTopic.publish(twist);
+            topicVel.publish(twist);
           }
         }
       }, 200);

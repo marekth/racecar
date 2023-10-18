@@ -1,7 +1,7 @@
 
 
 body {
-  font-size: 1rem; /* You can adjust this for default size and everything else will adjust */
+  font-size: 1rem; 
   margin: 0;
   padding: 0;
 }
@@ -12,8 +12,8 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  width: 100vw; /* Set width to 100% of viewport width */
-  max-width: 3000px; /* Avoid it from becoming too big */
+  width: 100vw; 
+  max-width: 3000px; 
 
 }
 
@@ -102,8 +102,8 @@ body {
 }
 
 #centered-image {
-  display: block; /* Removes the bottom margin due to inline nature of the image. */
-  max-width: 100%; /* Ensures the image doesn't overflow the container if it's too big. */
+  display: block; 
+  max-width: 100%; 
 }
 
 
@@ -150,7 +150,6 @@ body {
   width: 1677px;
 }
 
-/* Variables */
 :root {
   --black: rgba(0, 0, 0, 1);
   --salem: rgba(1, 136, 73, 1);
@@ -164,7 +163,6 @@ body {
   --font-family-arial: 'Arial';
 }
 
-/* Classes */
 .arial-normal-black-26px {
   color: var(--black);
   font-family: var(--font-family-arial);
@@ -222,12 +220,10 @@ width: 100px;
 height: 100px;
 background-color: #333;
 border: 2px solid #fff;
-
-/* Centering and styling the arrow symbols */
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 36px;   /* Adjust to your preference */
+font-size: 36px;   
 font-weight: bold;
 color: #fff;
 }
@@ -236,21 +232,21 @@ display: flex;
 flex-direction: column;
 align-items: center;
 justify-content: center;
-height: 100%;  /* This ensures that the div takes up the full height of its parent .col-md-3 */
+height: 100%;  
 }
 .effacez-button {
-display: flex;          /* Turn on flexbox for the container */
-align-items: center;    /* Vertically center the content */
-justify-content: center;/* Horizontally center the content */
+display: flex;          
+align-items: center;    
+justify-content: center;
 }
 
 .effacez-button .btn {
-font-size: 36px;        /* Adjust to desired size */
-padding: 15px;     /* Adjust to desired padding */
-width: 60%;             /* Adjust to desired width percentage */
-margin: 0;              /* Ensure no margins */
-background-color: red;     /* Red background */
-border-color: darkred;     /* Slightly darker red for the border for some depth, adjust as needed */
+font-size: 36px;        
+padding: 15px;     
+width: 60%;             
+margin: 0;             
+background-color: red;     
+border-color: darkred;   
 color: #fff;
 font-weight: bold;
 border-radius: 15px;  
