@@ -56,24 +56,22 @@ const int dri_dir_pin     = 42; //
 // Parameters
 ///////////////////////////////////////////////////////////////////
 
+// Controller
+
+//TODO: VOUS DEVEZ DETERMINEZ DES BONS PARAMETRES SUIVANTS
+const float filter_rc  =  0.1;
+const float vel_kp     =  10.0; 
+const float vel_ki     =  0.0; 
+const float vel_kd     =  0.0;
+const float pos_kp     =  1.0; 
+const float pos_kd     =  0.0;
+const float pos_ki     =  0.0; 
+const float pos_ei_sat =  10000.0; 
+
 // Loop period 
 const unsigned long time_period_low   = 2;    // 500 Hz for internal PID loop
-float         time_step_low     = ((float) time_period_low) / 1000;
 const unsigned long time_period_high  = 10;   // 100 Hz  for ROS communication
 const unsigned long time_period_com   = 1000; // 1000 ms = max com delay (watchdog)
-
-// Controller
-const float filter_rc  =  0.159; // 1/(2*pi*fc) avec fc = 1
-float alpha      =  time_step_low / (filter_rc + time_step_low);
-const float vel_k1 = 120;
-const float vel_k2 = 6.969;
-const float vel_kp     =  1; 
-const float vel_ki     =  0.6; 
-const float vel_kd     =  0.06;
-const float pos_kp     =  2.9;
-const float pos_kd     =  0;
-const float pos_ki     =  0.3;
-const float pos_ei_sat =  10000.0; 
 
 // Hardware min-zero-max range for the steering servo and the drive
 const int pwm_min_ser = 30  ;
@@ -112,13 +110,11 @@ signed long enc_now   = 0;
 signed long enc_old   = 0;
 
 float pos_now   = 0;
-float pos_old   = 0;
 float vel_now   = 0;
 float vel_old   = 0;
-float vel_fil   = 0;
 
-double vel_error_int = 0 ;
-double pos_error_int = 0;
+float vel_error_int = 0 ;
+float pos_error_int = 0;
 
 // Loop timing
 unsigned long time_now       = 0;
@@ -231,7 +227,7 @@ double ser2pwm (double cmd) {
 // Convertion function : Volt Command --> PWM
 double cmd2pwm (double cmd) {
 
-  long pwm = (long) ( cmd / batteryV * pwm_max_dri  + 0.5 );
+  int pwm = (int) ( cmd / batteryV * pwm_max_dri  + 0.5 );
   
   // Saturations
   if (pwm < pwm_min_dri) { 
@@ -320,19 +316,14 @@ void ctl(){
   
   // Position computation
   pos_now = (float) enc_now * tick2m;
-  pos_old = (float) enc_old * tick2m;
   
   // Velocity computation
-    // var real α := dt / (RC + dt)
-    // y[0] := α * x[0]
-    // for i from 1 to n
-    //     y[i] := α * x[i] + (1-α) * y[i-1]
-    // return y
-  //TODO: VOUS DEVEZ COMPLETEZ LA DERIVEE FILTRE ICI
-  float vel_raw = ((enc_now - enc_old) * tick2m) / time_step_low;
-  alpha = time_step_low / (filter_rc + time_step_low);
-  vel_fil = alpha * vel_raw + (1-alpha) * vel_fil;
 
+  //TODO: VOUS DEVEZ COMPLETEZ LA DERIVEE FILTRE ICI
+  float vel_raw = (enc_now - enc_old) * tick2m / time_period_low * 1000;
+  float alpha   = 0; // TODO
+  float vel_fil = vel_raw;    // Filter TODO
+  
   // Propulsion Controllers
   
   //////////////////////////////////////////////////////
@@ -343,6 +334,7 @@ void ctl(){
     // reset integral actions
     vel_error_int = 0;
     pos_error_int = 0 ;
+    
   }
   //////////////////////////////////////////////////////
   else if (ctl_mode == 1 ){
@@ -353,34 +345,45 @@ void ctl(){
     
     // reset integral actions
     vel_error_int = 0;
-    pos_error_int = 0;
+    pos_error_int = 0 ;
   }
   //////////////////////////////////////////////////////
   else if (ctl_mode == 2 ){
-  float vel_ref, vel_error;
-  vel_ref       = dri_ref; //assignation de teleop
+    // Low-level Velocity control
+    // Commands received in [m/sec] setpoints
+    
+    float vel_ref, vel_error;
 
-  // partie KP:
-  vel_error     = vel_ref - vel_fil; 
+    //TODO: VOUS DEVEZ COMPLETEZ LE CONTROLLEUR SUIVANT
+    vel_ref       = dri_ref; 
+    vel_error     = vel_ref - vel_fil;
+    vel_error_int = 0; // TODO
+    dri_cmd       = vel_kp * vel_error; // proportionnal only
+    
+    dri_pwm    = cmd2pwm( dri_cmd ) ;
 
-  // Somme des commandes + envoi de commande
-  dri_cmd   = vel_k1 * vel_error; 
-  dri_pwm   = cmd2pwm( dri_cmd );
   }
-  
   ///////////////////////////////////////////////////////
   else if (ctl_mode == 3){
     // Low-level Position control
     // Commands received in [m] setpoints
-    float vel_ref, vel_error;
-    vel_ref       = dri_ref; //assignation de teleop
+    
+    float pos_ref, pos_error, pos_error_ddt;
 
-    // partie KP:
-    vel_error     = vel_ref - vel_fil; 
-
-    // Somme des commandes + envoi de commande
-    dri_cmd   = vel_k2 * vel_error; 
-    dri_pwm   = cmd2pwm( dri_cmd );
+    //TODO: VOUS DEVEZ COMPLETEZ LE CONTROLLEUR SUIVANT
+    pos_ref       = dri_ref; 
+    pos_error     = 0; // TODO
+    pos_error_ddt = 0; // TODO
+    pos_error_int = 0; // TODO
+    
+    // Anti wind-up
+    if ( pos_error_int > pos_ei_sat ){
+      pos_error_int = pos_ei_sat;
+    }
+    
+    dri_cmd = 0; // TODO
+    
+    dri_pwm = cmd2pwm( dri_cmd ) ;
   }
   ///////////////////////////////////////////////////////
   else if (ctl_mode == 4){
@@ -389,34 +392,18 @@ void ctl(){
     clearEncoderCount();
     
     // reset integral actions
-    vel_error_int = 0;
-    pos_error_int = 0;
-    dri_pwm = pwm_zer_dri;
-  }
-  else if (ctl_mode == 5){    
-    dri_pwm = cmd2pwm( dri_ref );
-
-    // reset integral actions
-    vel_error_int = 0;
-    pos_error_int = 0;
-  }
-  else if (ctl_mode == 6){
-    float vel_ref, vel_error;
-
-    vel_ref       = dri_ref;
-    vel_error     = vel_ref - vel_fil;
-    vel_error_int += vel_error * time_step_low;
-    dri_cmd       = vel_kp * vel_error + vel_ki * vel_error_int;
+    vel_error_int = 0 ;
+    pos_error_int = 0 ;
     
-    dri_pwm = cmd2pwm( dri_cmd );
+    dri_pwm    = pwm_zer_dri ;
   }
   ////////////////////////////////////////////////////////
   else {
     // reset integral actions
-    vel_error_int = 0;
-    pos_error_int = 0;
+    vel_error_int = 0 ;
+    pos_error_int = 0 ;
     
-    dri_pwm    = pwm_zer_dri;
+    dri_pwm    = pwm_zer_dri ;
   }
   ///////////////////////////////////////////////////////
   
@@ -498,10 +485,10 @@ void loop(){
   ///////////////////////////////////////
 
   if (( time_now - time_last_low ) > time_period_low ) {
-
-    time_step_low = ((float) (time_now - time_last_low)) / 1000;
+    
     ctl(); // one control tick
-    time_last_low = time_now;
+
+    time_last_low = time_now ;
   }
 
   ////////////////////////////////////////
@@ -520,12 +507,12 @@ void loop(){
     prop_sensors_data[3] = dri_cmd; // drive set point in volts
     prop_sensors_data[4] = dri_pwm; // drive set point in pwm
     prop_sensors_data[5] = enc_now; // raw encoder counts
-    prop_sensors_data[6] = ser_ref; // steering angle
+    prop_sensors_data[6] = ser_ref; // steering angle (don't remove/change, used for GRO830)
     prop_sensors_data[7] = (float)( time_now - time_last_com ); // for com debug
-    prop_sensors_data[8] = (float)dt; // time elapsed since last publish
-    prop_sensors_data[9] = (enc_now - enc_last_high) * tick2m; // distance travelled since last publish
+    prop_sensors_data[8] = (float)dt; // time elapsed since last publish (don't remove/change, used for GRO830)
+    prop_sensors_data[9] = (enc_now - enc_last_high) * tick2m; // distance travelled since last publish (don't remove/change, used for GRO830)
 
-    // Read IMU
+    // Read IMU (don't remove/change, used for GRO830)
     imu.readSensor();
     prop_sensors_data[10] = imu.getAccelX_mss();
     prop_sensors_data[11] = imu.getAccelY_mss();

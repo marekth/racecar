@@ -28,9 +28,9 @@ class slash_controller(object):
         # Controller        
         self.steering_offset = 0.0 # To adjust according to the vehicle
         
-        self.K_autopilot =  None # TODO: DESIGN LQR
+        self.K_autopilot =  np.array([[0,0],[0.3162, 0.5613]]) # TODO: DESIGN LQR
     
-        self.K_parking   =  None # TODO: DESIGN PLACEMENT DE POLES
+        self.K_parking   =  np.array([[1.38,0, 0],[0, 0.1062, 0.34]]) # 2m/s TODO: DESIGN PLACEMENT DE POLES
         
         # Memory
         
@@ -92,47 +92,38 @@ class slash_controller(object):
             # APP4 (closed-loop steering) controllers bellow
             elif ( self.high_level_mode == 3 or self.high_level_mode == 5  ):
                 # Closed-loop velocity and steering
-            
-                #########################################################
-                # TODO: COMPLETEZ LE CONTROLLER
                 
-                # Auto-pilot # 1 
+                x1 = self.laser_y
+                x2 = -self.laser_theta
                 
-                # x = [ ?,? ,.... ]
-                # r = [ ?,? ,.... ]
-                # u = [ servo_cmd , prop_cmd ]
-
-                x = None
-                r = None
+                x = np.array([[x1],[x2]])
+                r = np.array([[0],[0]])
                 
                 u = self.controller1( x , r )
 
                 self.steering_cmd   = u[1] + self.steering_offset
-                self.propulsion_cmd = u[0]     
-                self.arduino_mode   = 0    # Mode ??? on arduino
+                self.propulsion_cmd = 2   # vitesse m/s
+                self.arduino_mode   = 2    # Mode arduino
+                
                 # TODO: COMPLETEZ LE CONTROLLER
                 #########################################################
                 
             elif ( self.high_level_mode == 4 ):
                 # Closed-loop position and steering
-            
-                #########################################################
-                # TODO: COMPLETEZ LE CONTROLLER
                 
-                # Auto-pilot # 1 
-                
-                # x = [ ?,? ,.... ]
-                # r = [ ?,? ,.... ]
-                # u = [ servo_cmd , prop_cmd ]
-                
-                x = None
-                r = None
+                x1 = self.position
+                x2 = self.laser_y
+                x3 = -self.laser_theta
+		   
+                x = np.array([[x1],[x2],[x3]])
+                r = np.array([[3],[0],[0]])
                 
                 u = self.controller2( x , r )
 
                 self.steering_cmd   = u[1] + self.steering_offset
                 self.propulsion_cmd = u[0]     
-                self.arduino_mode   = 0 # Mode ??? on arduino
+                self.arduino_mode   = 3 # Mode on arduino
+                
                 # TODO: COMPLETEZ LE CONTROLLER
                 #########################################################
                 
@@ -162,24 +153,20 @@ class slash_controller(object):
 
         
     #######################################
-    def controller1(self, y , r):
+    def controller1(self, x , r):
 
         # Control Law TODO
-
-        u = np.array([ 0 , 0 ]) # placeholder
         
-        #u = np.dot( self.K_autopilot , (r - x) )
+        u = np.dot( self.K_autopilot , (r - x) )
         
         return u
 
     #######################################
-    def controller2(self, y , r ):
+    def controller2(self, x , r ):
 
         # Control Law TODO
-
-        u = np.array([ 0 , 0 ]) # placeholder
         
-        #u = np.dot( self.K_parking , (r - x) )
+        u = np.dot( self.K_parking , (r - x) )
         
         return u
 
@@ -204,7 +191,9 @@ class slash_controller(object):
         # Read feedback from arduino
         self.velocity       = msg.data[1]
         self.position       = msg.data[0]
-        
+        rospy.logwarn("Velocity: %s, Position:%s",self.velocity, self.position)
+
+
     ##########################################################################################
     def send_arduino(self):
  
